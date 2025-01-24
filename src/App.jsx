@@ -1,36 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import appLogo from '/favicon.svg'
-import PWABadge from './PWABadge.jsx'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { openDB } from 'idb'
+import Header from './components/Header'
+import AddNewTaskForm from './components/AddNewTaskForm'
+import TaskList from './components/TaskList'
+import NewTaskFormBtn from './components/NewTaskFormBtn'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false)
+  const [taskList, setTaskList] = useState([])
+
+  const openDatabase = async () => {
+    const db = await openDB('mytodo', 1, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains('mytodo_tasks')) {
+          db.createObjectStore('mytodo_tasks', { keyPath: 'id' });
+        }
+      },
+    });
+    return db;
+  };
+
+  const fetchTaskList = async () => {
+    const db = await openDatabase();
+    const tasksFromIDB = await db.getAll('mytodo_tasks');
+    setTaskList(tasksFromIDB);
+  };
+
+  const addNewTask = async (newTask) => {
+    const db = await openDatabase();
+    await db.add('mytodo_tasks', newTask);
+    fetchTaskList();
+  };
+
+  const deleteTask = async (id) => {
+    const db = await openDatabase();
+    await db.delete('mytodo_tasks', id);
+    fetchTaskList(); 
+  };
+
+  useEffect(() => {
+    fetchTaskList(); 
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={appLogo} className="logo" alt="ToDoPWA logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='flex m-auto overflow-y-auto h-screen'>
+      <div className='relative flex flex-1 overflow-y-auto flex-col bg-teal-800 text-white items-center'>
+      <Header />
+      {showNewTaskForm && <AddNewTaskForm addNewTask={addNewTask} setShowNewTaskForm={setShowNewTaskForm}/>}
+      <NewTaskFormBtn showNewTaskForm={showNewTaskForm} setShowNewTaskForm={setShowNewTaskForm}/>     
+      { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} />}
       </div>
-      <h1>ToDoPWA</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <PWABadge />
-    </>
+    </div>
   )
 }
 
