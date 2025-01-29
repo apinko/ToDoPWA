@@ -1,0 +1,37 @@
+{
+  "name": "ToDo PWA",
+  "short_name": "ToDo PWA",
+  "description": "ToDo App",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+      {
+          "src": "pwa-64x64.png",
+          "sizes": "64x64",
+          "type": "image/png"
+        },
+      {
+          "src": "pwa-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+      {
+          "src": "pwa-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+  ],
+  "screenshots": [
+  {
+    "src": "screenshot-wide.png",
+    "type": "image/png",
+    "sizes": "1280x800",
+    "form_factor": "wide"
+  },
+  {
+    "src": "screenshot.png",
+    "type": "image/png",
+    "sizes": "355x781"
+  }
+]
+}

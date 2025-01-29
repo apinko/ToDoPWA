@@ -43,8 +43,8 @@ function App() {
   }, []);
 
   return (
-    <div className='flex m-auto overflow-y-auto h-screen'>
-      <div className='relative flex flex-1 overflow-y-auto flex-col bg-teal-800 text-white items-center'>
+    <div className='flex m-auto h-screen'>
+      <div className='relative flex flex-1 flex-col bg-teal-800 text-white items-center'>
       <Header />
       {showNewTaskForm && <AddNewTaskForm addNewTask={addNewTask} setShowNewTaskForm={setShowNewTaskForm}/>}
       <NewTaskFormBtn showNewTaskForm={showNewTaskForm} setShowNewTaskForm={setShowNewTaskForm}/>     
