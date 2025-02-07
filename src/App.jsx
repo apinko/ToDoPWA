@@ -4,6 +4,7 @@ import Header from './components/Header'
 import AddNewTaskForm from './components/AddNewTaskForm'
 import TaskList from './components/TaskList'
 import NewTaskFormBtn from './components/NewTaskFormBtn'
+import ConnectionStatus from './components/ConnectionStatus' // Importujemy status połączenia
 
 function App() {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false)
@@ -44,11 +45,12 @@ function App() {
 
   return (
     <div className='flex m-auto h-screen'>
-      <div className='relative flex flex-1 flex-col bg-teal-800 text-white items-center'>
-      <Header />
-      {showNewTaskForm && <AddNewTaskForm addNewTask={addNewTask} setShowNewTaskForm={setShowNewTaskForm}/>}
-      <NewTaskFormBtn showNewTaskForm={showNewTaskForm} setShowNewTaskForm={setShowNewTaskForm}/>     
-      { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} />}
+      <div className='relative flex flex-1 flex-col bg-teal-800 text-white items-center p-4'>
+        <ConnectionStatus /> {/* Poprawione – status połączenia nie jest już fixed */}
+        <Header />
+        {showNewTaskForm && <AddNewTaskForm addNewTask={addNewTask} setShowNewTaskForm={setShowNewTaskForm}/>}
+        <NewTaskFormBtn showNewTaskForm={showNewTaskForm} setShowNewTaskForm={setShowNewTaskForm}/>     
+        { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} />}
       </div>
     </div>
   )
