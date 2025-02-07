@@ -9,6 +9,7 @@ import ConnectionStatus from './components/ConnectionStatus' // Importujemy stat
 function App() {
   const [showNewTaskForm, setShowNewTaskForm] = useState(false)
   const [taskList, setTaskList] = useState([])
+  const [editingTask, setEditingTask] = useState(null); // Zadanie do edycji
 
   const openDatabase = async () => {
     const db = await openDB('mytodo', 1, {
@@ -39,6 +40,20 @@ function App() {
     fetchTaskList(); 
   };
 
+
+const updateTask = async (updatedTask) => {
+    const db = await openDatabase();
+    await db.put('mytodo_tasks', updatedTask);
+    setEditingTask(null);
+    fetchTaskList();
+};
+
+const confirmDelete = (id) => {
+    if (window.confirm("Czy na pewno chcesz usunąć to zadanie?")) {
+        deleteTask(id);
+    }
+};
+
   useEffect(() => {
     fetchTaskList(); 
   }, []);
@@ -50,7 +65,7 @@ function App() {
         <Header />
         {showNewTaskForm && <AddNewTaskForm addNewTask={addNewTask} setShowNewTaskForm={setShowNewTaskForm}/>}
         <NewTaskFormBtn showNewTaskForm={showNewTaskForm} setShowNewTaskForm={setShowNewTaskForm}/>     
-        { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} />}
+        { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} setEditingTask={setEditingTask} updateTask={updateTask} editingTask={editingTask} />}
       </div>
     </div>
   )
