@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function TaskList({ taskList, deleteTask, setEditingTask, updateTask, editingTask, setShowNewTaskForm }) {
+export default function TaskList({ taskList, deleteTask, setEditingTask, updateTask, editingTask }) {
     const [taskToDelete, setTaskToDelete] = useState(null);
     
     const handleDeleteClick = (task) => {
@@ -62,14 +62,6 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
                     </div>
                 </div>
             )}
-
-            {/* Przycisk dodawania nowego zadania */}
-            <button 
-                type="button"
-                onClick={() => setShowNewTaskForm(true)}
-                className="fixed bottom-6 right-6 bg-blue-500 text-white text-3xl font-bold w-16 h-16 flex items-center justify-center rounded-full shadow-lg hover:bg-blue-600 transition-transform transform hover:scale-110 z-50">
-                ➕
-            </button>
         </div>
     );
 }
