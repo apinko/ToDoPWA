@@ -10,7 +10,7 @@ const STATIC = [
 
 self.addEventListener('install', (event) => {
     console.log('SW install')
-    self.skipWaiting(); // Forces the new SW to activate immediately
+    self.skipWaiting(); // Natychmiastowa aktywacja nowego SW
     event.waitUntil(
         caches.open(cacheName).then((cache) => {
           console.log('Open cache');
@@ -20,13 +20,16 @@ self.addEventListener('install', (event) => {
 })
 
 self.addEventListener('activate', (event) => {
-    console.log('SW activate')
-
-    event.waitUntil(caches.keys().then(cacheNames => {
-        return Promise.all(cacheNames.filter(item => item !== cacheName).map(name => caches.delete(name)))
-    }))
-    self.clients.claim(); // Ensures all clients use the new SW immediately
-})
+    console.log('SW activate');
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(name => caches.delete(name)) // Usuwa wszystkie stare cache
+            );
+        })
+    );
+    self.clients.claim(); // Przejmowanie kontroli nad otwartymi stronami
+});
 
 self.addEventListener('fetch', (event) => {
     console.log('SW fetch')

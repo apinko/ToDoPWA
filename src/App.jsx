@@ -3,7 +3,6 @@ import { openDB } from 'idb'
 import Header from './components/Header'
 import AddNewTaskForm from './components/AddNewTaskForm'
 import TaskList from './components/TaskList'
-import NewTaskFormBtn from './components/NewTaskFormBtn'
 import ConnectionStatus from './components/ConnectionStatus' // Importujemy status połączenia
 
 function App() {
@@ -82,8 +81,7 @@ function App() {
         <ConnectionStatus /> {/* Poprawione – status połączenia nie jest już fixed */}
         <Header />
         {showNewTaskForm && <AddNewTaskForm addNewTask={addNewTask} setShowNewTaskForm={setShowNewTaskForm}/>} 
-        <NewTaskFormBtn showNewTaskForm={showNewTaskForm} setShowNewTaskForm={setShowNewTaskForm}/>     
-        { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} setEditingTask={setEditingTask} updateTask={updateTask} editingTask={editingTask} />}
+        { !showNewTaskForm && <TaskList taskList={taskList} deleteTask={deleteTask} setEditingTask={setEditingTask} updateTask={updateTask} editingTask={editingTask} setShowNewTaskForm={setShowNewTaskForm} />}
       </div>
     </div>
   )
