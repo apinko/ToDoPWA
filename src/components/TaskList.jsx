@@ -16,6 +16,8 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
     setTaskToDelete(null);
   };
 
+  const [tasks, setTasks] = useState([]); // Zamiast undefined, pusty array
+
   return (
     <div className="relative w-full h-screen overflow-y-auto p-4 pb-24">
       {/* Siatka kafelków */}
@@ -87,13 +89,13 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
       )}
 
       {/* Przycisk dodawania nowego zadania */}
-      <button
+      {/* <button
         type="button"
         onClick={() => setShowNewTaskForm(true)}
         className="fixed bottom-6 right-6 bg-blue-500 text-white text-3xl font-bold w-16 h-16 flex items-center justify-center rounded-full shadow-lg hover:bg-blue-600 transition-transform transform hover:scale-110 z-50"
       >
         ➕
-      </button>
+      </button> */}
     </div>
   );
 }
