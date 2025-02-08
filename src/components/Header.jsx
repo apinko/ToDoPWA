@@ -1,5 +1,17 @@
-export default function Header() {
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+function Header() {
   return (
-    <h1 className='mt-10 mb-4 text-xl text-inherit'>My ToDo List:</h1>
-  )
+    <header className="header">
+      <h1>My ToDo List</h1>
+      <nav>
+        <Link to="/">📋 Lista</Link>
+        <Link to="/add">➕ Dodaj</Link>
+        <Link to="/stats">📊 Statystyki</Link>
+      </nav>
+    </header>
+  );
 }
+
+export default Header;
