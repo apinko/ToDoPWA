@@ -57,23 +57,31 @@ function App() {
   }, []);
 
   // Dodano useEffect, aby wykrywać nową wersję Service Workera i wymuszać odświeżenie
-  // Jeśli Service Worker znajdzie nową wersję, użytkownik zobaczy komunikat z prośbą o odświeżenie strony
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then((registration) => {
-          registration.addEventListener('updatefound', () => {
-              const newWorker = registration.installing;
-              newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                      if (confirm("Nowa wersja dostępna! Odświeżyć stronę?")) {
-                          window.location.reload();
-                      }
-                  }
-              });
-          });
-      });
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js").then((registration) => {
+            registration.addEventListener("updatefound", () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener("statechange", () => {
+                    if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                        console.log("Nowa wersja dostępna – odświeżam stronę...");
+                        window.location.reload(); // 🚀 Odświeżenie w tle, bez alertu!
+                    }
+                });
+            });
+        });
+
+        //  Unikamy zapętlenia reloadów
+        let reloaded = false;
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (!reloaded) {
+                console.log("Service Worker zaktualizowany, przeładowuję stronę...");
+                reloaded = true;
+                window.location.reload();
+            }
+        });
     }
-  }, []);
+}, []);
 
   return (
     <div className='flex m-auto h-screen'>

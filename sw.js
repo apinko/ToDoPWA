@@ -1,49 +1,58 @@
-const cacheName = 'todopwa-app'
+const CACHE_NAME = "todopwa-v1";
+const STATIC_ASSETS = [
+    "/",
+    "/index.html",
+    "/manifest.json",
+    "/pwa-64x64.png",
+    "/pwa-192x192.png",
+    "/pwa-512x512.png"
+];
 
-const STATIC = [
-    '/manifest.json',
-    '/favicon.ico',
-    '/pwa-64x64.png',
-    '/pwa-192x192.png',
-    '/pwa-512x512.png',
-  ];
-
-self.addEventListener('install', (event) => {
-    console.log('SW install')
-    self.skipWaiting(); // Natychmiastowa aktywacja nowego SW
+self.addEventListener("install", (event) => {
+    console.log("Service Worker installing...");
     event.waitUntil(
-        caches.open(cacheName).then((cache) => {
-          console.log('Open cache');
-          return cache.addAll(STATIC);
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log("Caching static assets");
+            return cache.addAll(STATIC_ASSETS);
         })
-      );
-})
+    );
+    self.skipWaiting(); // Aktywacja nowego SW natychmiast
+});
 
-self.addEventListener('activate', (event) => {
-    console.log('SW activate');
+self.addEventListener("activate", (event) => {
+    console.log("Service Worker activating...");
     event.waitUntil(
-        caches.keys().then(cacheNames => {
+        caches.keys().then((keys) => {
             return Promise.all(
-                cacheNames.map(name => caches.delete(name)) // Usuwa wszystkie stare cache
+                keys.map((key) => {
+                    if (key !== CACHE_NAME) {
+                        console.log("Deleting old cache:", key);
+                        return caches.delete(key);
+                    }
+                })
             );
         })
     );
-    self.clients.claim(); // Przejmowanie kontroli nad otwartymi stronami
+    self.clients.claim(); // Przejmujemy kontrolę nad wszystkimi otwartymi stronami
 });
 
-self.addEventListener('fetch', (event) => {
-    console.log('SW fetch')
+// Fetch z priorytetem sieciowym (Network First)
+self.addEventListener("fetch", (event) => {
     event.respondWith(
-        caches.match(event.request).then(response => {
-            if(response) {
-                return response
-            }
-            return fetch(event.request)
-            .then(response => {
-            return caches.open(cacheName).then(cache => {cache.put(event.request, response.clone())
-                return response
+        fetch(event.request)
+            .then((response) => {
+                // Jeśli pobranie zasobu z sieci się powiodło, zapisujemy go do cache
+                return caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, response.clone());
+                    return response;
+                });
             })
-        })
-        })
-    )
-})
+            .catch(() => {
+                // Jeśli brak sieci, próbujemy pobrać z cache
+                console.warn("Brak sieci, używam cache dla:", event.request.url);
+                return caches.match(event.request).then((cachedResponse) => {
+                    return cachedResponse || new Response("Offline", { status: 503 });
+                });
+            })
+    );
+});
