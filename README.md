@@ -26,14 +26,16 @@ co zapewnia trwałość nawet po odświeżeniu strony.
 ## 🖼 Zrzuty ekranu
 
 ### 📋 Lista zadań
-![Lista zadań](screenshots/todo_list.png)
+![Lista zadań](public/screenshot-wide.png)
 
 ### ➕ Dodawanie zadania
-![Dodawanie zadania](screenshots/add_task.png)
+![Dodawanie zadania](public/add_task.png)
 
 ### 📊 Statystyki
-![Statystyki](screenshots/stats.png)
+![Statystyki](public/stats.png)
 
+### Responsywność
+![Statystyki](public/screenshot.png)
 ---
 
 ## 🛠 Technologie i języki programowania
