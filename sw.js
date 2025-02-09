@@ -36,6 +36,11 @@ self.addEventListener("activate", (event) => {
     self.clients.claim(); // Przejmujemy kontrolę nad wszystkimi otwartymi stronami
 });
 
+self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+    console.log("🔔 Powiadomienie kliknięte:", event.notification);
+  });
+
 // Obsługa powiadomień push z wibracjami
 self.addEventListener("push", (event) => {
     console.log("🔔 Otrzymano event push w Service Workerze");
@@ -58,6 +63,9 @@ self.addEventListener("push", (event) => {
 // Obsługa zamykania powiadomień
 self.addEventListener("notificationclose", (event) => {
     console.log("🔕 Powiadomienie zostało zamknięte:", event.notification);
+    if ("vibrate" in navigator) {
+        navigator.vibrate([200, 100, 200]); // Wibracja: 200ms - przerwa 100ms - 200ms
+    }
 });
 
 // Fetch z priorytetem sieciowym (Network First)

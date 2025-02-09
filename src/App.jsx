@@ -12,10 +12,11 @@ function App() {
   const [taskList, setTaskList] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
 
+  // 🔄 Pobieranie listy zadań z IndexedDB
   useEffect(() => {
     fetchTaskList();
 
-    // 🔄 Nasłuchiwanie zmian w innych zakładkach
+    // Nasłuchiwanie zmian w innych zakładkach (synchronizacja)
     channel.onmessage = (event) => {
       if (event.data === "update_tasks") {
         console.log("🔄 Otrzymano update_tasks - odświeżanie listy");
@@ -24,6 +25,24 @@ function App() {
     };
   }, []);
 
+  // ✅ Rejestracja Service Workera i sprawdzenie powiadomień
+  useEffect(() => {
+    // Rejestracja Service Workera
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js")
+        .then((reg) => console.log("✅ Service Worker zarejestrowany:", reg))
+        .catch((err) => console.error("❌ Błąd rejestracji SW:", err));
+    }
+
+    // Sprawdzenie uprawnień do powiadomień
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        console.log("🔔 Status powiadomień:", permission);
+      });
+    }
+  }, []);
+
+  // 🔹 Funkcja otwierająca bazę danych IndexedDB
   const openDatabase = async () => {
     const db = await openDB("mytodo", 1, {
       upgrade(db) {
@@ -35,32 +54,36 @@ function App() {
     return db;
   };
 
+  // 🔹 Pobieranie zadań z IndexedDB
   const fetchTaskList = async () => {
     const db = await openDatabase();
     const tasksFromIDB = await db.getAll("mytodo_tasks");
     setTaskList(tasksFromIDB || []);
   };
 
+  // 🔹 Dodawanie nowego zadania
   const addNewTask = async (newTask) => {
     const db = await openDatabase();
     await db.add("mytodo_tasks", newTask);
     fetchTaskList(); // Odświeżenie listy
-    channel.postMessage("update_tasks"); // 🔄 Powiadomienie innych okien o zmianie
+    channel.postMessage("update_tasks"); // Powiadomienie innych okien
   };
 
+  // 🔹 Usuwanie zadania
   const deleteTask = async (id) => {
     const db = await openDatabase();
     await db.delete("mytodo_tasks", id);
     fetchTaskList();
-    channel.postMessage("update_tasks"); // 🔄 Powiadomienie innych okien o usunięciu
+    channel.postMessage("update_tasks"); // Powiadomienie innych okien
   };
 
+  // 🔹 Aktualizacja zadania
   const updateTask = async (updatedTask) => {
     const db = await openDatabase();
     await db.put("mytodo_tasks", updatedTask);
     setEditingTask(null);
     fetchTaskList();
-    channel.postMessage("update_tasks"); // 🔄 Powiadomienie innych okien o edycji
+    channel.postMessage("update_tasks"); // Powiadomienie innych okien
   };
 
   return (
@@ -71,7 +94,7 @@ function App() {
             <h1 className="text-3xl font-bold text-yellow-300">My ToDo List</h1>
           </div>
           <div>
-          <ConnectionStatus />
+            <ConnectionStatus />
           </div>
         </div>
         <div className="flex justify-center gap-12 text-xl mt-3">
@@ -80,7 +103,7 @@ function App() {
           <Link to="/stats" className="px-4">📊 Statystyki</Link>
         </div>
       </div>
-      
+
       <div className="w-full max-w-6xl mt-4">
         <Routes>
           <Route path="/" element={
