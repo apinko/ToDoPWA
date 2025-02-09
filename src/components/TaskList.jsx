@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const channel = new BroadcastChannel("todo_sync");
+
 export default function TaskList({ taskList, deleteTask, setEditingTask, updateTask, editingTask, setShowNewTaskForm }) {
   const [taskToDelete, setTaskToDelete] = useState(null);
 
@@ -9,14 +11,13 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
 
   const confirmDelete = () => {
     deleteTask(taskToDelete.id);
+    channel.postMessage("update_tasks"); // 🔄 Powiadomienie o usunięciu zadania
     setTaskToDelete(null);
   };
 
   const closeModal = () => {
     setTaskToDelete(null);
   };
-
-  const [tasks, setTasks] = useState([]); // Zamiast undefined, pusty array
 
   return (
     <div className="relative w-full h-screen overflow-y-auto p-4 pb-24">
@@ -38,6 +39,7 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
               </button>
             </div>
 
+            {/* Wyświetlanie tytułu i opisu */}
             {editingTask && editingTask.id === item.id ? (
               <form
                 onSubmit={(e) => {
@@ -51,6 +53,11 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
                   value={editingTask.name}
                   onChange={(e) => setEditingTask({ ...editingTask, name: e.target.value })}
                 />
+                <textarea
+                  className="w-full p-1 border border-gray-300 bg-white text-black text-sm mt-1"
+                  value={editingTask.description || ""}
+                  onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+                />
                 <div className="flex gap-1 mt-1">
                   <button type="submit" className="bg-blue-500 text-white px-2 py-1 text-xs rounded">
                     💾
@@ -63,7 +70,9 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
             ) : (
               <>
                 <h2 className="text-lg font-bold">{item.name}</h2>
-                {item.deadline && <p className="text-sm text-gray-400">Deadline: {item.deadline}</p>}
+                {item.description && <p className="text-sm text-gray-700 break-words">{item.description}</p>}
+                {item.deadline && <p className="text-sm text-black">📅 {item.deadline}</p>}
+                {item.city && <p className="text-sm italic text-black">📍 {item.city}</p>}
               </>
             )}
           </div>
@@ -87,15 +96,6 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
           </div>
         </div>
       )}
-
-      {/* Przycisk dodawania nowego zadania */}
-      {/* <button
-        type="button"
-        onClick={() => setShowNewTaskForm(true)}
-        className="fixed bottom-6 right-6 bg-blue-500 text-white text-3xl font-bold w-16 h-16 flex items-center justify-center rounded-full shadow-lg hover:bg-blue-600 transition-transform transform hover:scale-110 z-50"
-      >
-        ➕
-      </button> */}
     </div>
   );
 }

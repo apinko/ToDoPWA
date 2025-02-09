@@ -16,7 +16,7 @@ const ConnectionStatus = () => {
   }, []);
 
   return (
-    <div className={`fixed top-2 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-md text-white ${
+    <div className={`px-4 py-2 rounded-md text-white ${
       isOnline ? "bg-green-500" : "bg-red-500"
     }`}>
       {isOnline ? "You are online" : "You are offline"}
