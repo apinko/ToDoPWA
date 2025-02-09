@@ -23,6 +23,19 @@ co zapewnia trwałość nawet po odświeżeniu strony.
 
 ---
 
+## 🖼 Zrzuty ekranu
+
+### 📋 Lista zadań
+![Lista zadań](screenshots/todo_list.png)
+
+### ➕ Dodawanie zadania
+![Dodawanie zadania](screenshots/add_task.png)
+
+### 📊 Statystyki
+![Statystyki](screenshots/stats.png)
+
+---
+
 ## 🛠 Technologie i języki programowania
 
 Aplikacja została stworzona w oparciu o **JavaScript** i wykorzystuje nowoczesne technologie webowe:
