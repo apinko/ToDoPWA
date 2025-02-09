@@ -2,8 +2,22 @@ import { useState } from "react";
 
 const channel = new BroadcastChannel("todo_sync");
 
+
 export default function TaskList({ taskList, deleteTask, setEditingTask, updateTask, editingTask, setShowNewTaskForm }) {
   const [taskToDelete, setTaskToDelete] = useState(null);
+
+// export default function TaskList({ taskList, deleteTask, setEditingTask, updateTask, editingTask }) {
+//     const [taskToDelete, setTaskToDelete] = useState(null);
+    
+//     const handleDeleteClick = (task) => {
+//         setTaskToDelete(task);
+//     };
+    
+//     const confirmDelete = () => {
+//         deleteTask(taskToDelete.id);
+//         setTaskToDelete(null);
+//     };
+
 
   const handleDeleteClick = (task) => {
     setTaskToDelete(task);
@@ -77,6 +91,8 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
         ))}
       </div>
 
+            {/* Modal potwierdzający usunięcie zadania */}
+
       {taskToDelete && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded shadow-md w-80 text-center">
@@ -92,3 +108,6 @@ export default function TaskList({ taskList, deleteTask, setEditingTask, updateT
     </div>
   );
 }
+//         </div>
+//     );
+// }

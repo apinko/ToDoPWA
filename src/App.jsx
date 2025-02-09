@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { openDB } from "idb";
 import { Routes, Route, Link } from "react-router-dom";
@@ -7,6 +8,18 @@ import Statistics from "./components/Statistics";
 import ConnectionStatus from "./components/ConnectionStatus";
 
 const channel = new BroadcastChannel("todo_sync");
+
+// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import { useEffect, useState } from 'react';
+// import { openDB } from 'idb';
+// import Header from './components/Header';
+// import AddNewTaskForm from './components/AddNewTaskForm';
+// import TaskList from './components/TaskList';
+// import ConnectionStatus from './components/ConnectionStatus';
+
+// // ✅ Sprawdź, czy masz plik Statistics.jsx w components
+// import Statistics from './components/Statistics'; 
+
 
 function App() {
   const [taskList, setTaskList] = useState([]);
@@ -120,6 +133,27 @@ function App() {
         </Routes>
       </div>
     </div>
+
+  // useEffect(() => {
+  //   fetchTaskList();
+  // }, []);
+
+  // return (
+  //   <Router>
+  //     <div className='flex m-auto h-screen'>
+  //       <div className='relative flex flex-1 flex-col bg-teal-800 text-white items-center p-4'>
+  //         <ConnectionStatus />
+  //         <Header /> {/* Dodaje linki nawigacyjne */}
+  //         <Routes>
+  //           <Route path="/" element={<TaskList taskList={taskList} setEditingTask={setEditingTask} />} />
+  //           <Route path="/add" element={<AddNewTaskForm addNewTask={addNewTask} />} />
+  //           {/* Sprawdź, czy plik Statistics.jsx istnieje */}
+  //           <Route path="/stats" element={<Statistics taskList={taskList} />} />
+  //         </Routes>
+  //       </div>
+  //     </div>
+  //   </Router>
+  
   );
 }
 
