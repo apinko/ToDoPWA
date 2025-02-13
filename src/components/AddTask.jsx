@@ -122,9 +122,13 @@ export default function AddTask({ addNewTask }) {
     }
   };
 
-  navigator.serviceWorker.addEventListener("notificationclose", (event) => {
-    console.log("🔕 Powiadomienie zostało zamknięte", event.notification);
-  });
+  if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.addEventListener("notificationclose", (event) => {
+        console.log("🔕 Powiadomienie zostało zamknięte", event.notification);
+    });
+} else {
+    console.warn("⚠ Service Worker nie jest dostępny lub nie został jeszcze zarejestrowany.");
+}
 
   return (
     <div className="p-4">
