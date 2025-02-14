@@ -6,7 +6,9 @@ const STATIC_ASSETS = [
     "/offline.html", // 📌 Dodano stronę offline
     "/pwa-64x64.png",
     "/pwa-192x192.png",
-    "/pwa-512x512.png"
+    "/pwa-512x512.png",
+    "/screenshot.png",
+    "/screenshot-wide.png"
 ];
 
 // Instalacja Service Workera i cache'owanie plików
