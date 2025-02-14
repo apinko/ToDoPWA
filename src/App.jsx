@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { openDB } from "idb";
 import { Routes, Route, Link } from "react-router-dom";
@@ -9,17 +8,19 @@ import ConnectionStatus from "./components/ConnectionStatus";
 
 const channel = new BroadcastChannel("todo_sync");
 
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { useEffect, useState } from 'react';
-// import { openDB } from 'idb';
-// import Header from './components/Header';
-// import AddNewTaskForm from './components/AddNewTaskForm';
-// import TaskList from './components/TaskList';
-// import ConnectionStatus from './components/ConnectionStatus';
-
-// // ✅ Sprawdź, czy masz plik Statistics.jsx w components
-// import Statistics from './components/Statistics'; 
-
+// 📳 Funkcja uruchamiająca wibrację (Android + iPhone Haptic Engine)
+function triggerHapticFeedback(type = "light") {
+    if ("vibrate" in navigator) {
+        navigator.vibrate([200, 100, 200]); // 📳 Wibracja na Androidzie
+    } else if (window?.webkit?.messageHandlers?.impactOccurred) {
+        // 📳 iPhone Haptic Engine
+        try {
+            window.webkit.messageHandlers.impactOccurred.postMessage({ style: type });
+        } catch (err) {
+            console.warn("⚠ Brak wsparcia dla Haptic Feedback na iOS", err);
+        }
+    }
+}
 
 function App() {
   const [taskList, setTaskList] = useState([]);
@@ -38,12 +39,21 @@ function App() {
     };
   }, []);
 
-  // ✅ Rejestracja Service Workera i sprawdzenie powiadomień
+  // ✅ Rejestracja Service Workera, obsługa powiadomień i wibracji
   useEffect(() => {
-    // Rejestracja Service Workera
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js")
-        .then((reg) => console.log("✅ Service Worker zarejestrowany:", reg))
+        .then((reg) => {
+          console.log("✅ Service Worker zarejestrowany:", reg);
+
+          if (reg.active) {
+            // 📌 Nasłuchiwanie zamknięcia powiadomień (obsługa wibracji)
+            navigator.serviceWorker.addEventListener("notificationclose", (event) => {
+              console.log("🔕 Powiadomienie zamknięte:", event.notification);
+              triggerHapticFeedback("medium"); // 📳 Uruchom wibrację po zamknięciu powiadomienia
+            });
+          }
+        })
         .catch((err) => console.error("❌ Błąd rejestracji SW:", err));
     }
 
@@ -133,27 +143,6 @@ function App() {
         </Routes>
       </div>
     </div>
-
-  // useEffect(() => {
-  //   fetchTaskList();
-  // }, []);
-
-  // return (
-  //   <Router>
-  //     <div className='flex m-auto h-screen'>
-  //       <div className='relative flex flex-1 flex-col bg-teal-800 text-white items-center p-4'>
-  //         <ConnectionStatus />
-  //         <Header /> {/* Dodaje linki nawigacyjne */}
-  //         <Routes>
-  //           <Route path="/" element={<TaskList taskList={taskList} setEditingTask={setEditingTask} />} />
-  //           <Route path="/add" element={<AddNewTaskForm addNewTask={addNewTask} />} />
-  //           {/* Sprawdź, czy plik Statistics.jsx istnieje */}
-  //           <Route path="/stats" element={<Statistics taskList={taskList} />} />
-  //         </Routes>
-  //       </div>
-  //     </div>
-  //   </Router>
-  
   );
 }
 

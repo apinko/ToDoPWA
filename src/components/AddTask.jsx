@@ -73,6 +73,7 @@ export default function AddTask({ addNewTask }) {
     addNewTask(task);
     channel.postMessage("update_tasks");
     sendLocalNotification(task.name);
+    triggerHapticFeedback(); // 📳 Wibracja po dodaniu zadania
 
     // Resetowanie formularza
     setTaskName("");
@@ -110,8 +111,8 @@ export default function AddTask({ addNewTask }) {
         .then((registration) => {
           return registration.showNotification("Nowe zadanie dodane!", {
             body: `Zadanie: ${taskName}`,
-            icon: "/icon.png",
-            badge: "/badge.png",
+            icon: "/pwa-192x192.png",
+            badge: "/pwa-64x64.png",
             requireInteraction: true,
           });
         })
@@ -122,9 +123,14 @@ export default function AddTask({ addNewTask }) {
     }
   };
 
-  navigator.serviceWorker.addEventListener("notificationclose", (event) => {
-    console.log("🔕 Powiadomienie zostało zamknięte", event.notification);
-  });
+  const triggerHapticFeedback = () => {
+    if (window.navigator && "vibrate" in window.navigator) {
+      navigator.vibrate([100, 50, 100]); // 📳 Wibracja: 100ms - przerwa 50ms - 100ms
+      console.log("📳 Wibracja na iPhone uruchomiona!");
+    } else {
+      console.warn("⚠ Wibracja nieobsługiwana na tym urządzeniu.");
+    }
+  };
 
   return (
     <div className="p-4">
