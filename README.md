@@ -14,7 +14,7 @@ co zapewnia trwałość nawet po odświeżeniu strony.
 - **📍 Geolokalizacja** – Przy dodawaniu zadania można pobrać nazwę miasta.
 - **🔔 Powiadomienia push** – Informują o dodaniu i usunięciu zadania.
 - **📳 Wibracje** – Telefon wibruje po usunięciu zadania (jeśli obsługuje `navigator.vibrate`).
-- **⚡ Strategia cache Network First** – Aplikacja działa zarówno online, jak i offline.
+- **⚡ Strategia cache: Cache Only** – Aplikacja nie potrzebuje internetu do działania.
 - **📊 Trzy główne widoki aplikacji:**
   - 📝 **Lista zadań** – przeglądanie zapisanych zadań.
   - ➕ **Dodawanie zadania** – formularz do wprowadzania nowych zadań.

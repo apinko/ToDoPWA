@@ -3,12 +3,13 @@ const STATIC_ASSETS = [
     "/",
     "/index.html",
     "/manifest.json",
-    "/offline.html", // 📌 Dodano stronę offline
     "/pwa-64x64.png",
     "/pwa-192x192.png",
     "/pwa-512x512.png",
     "/screenshot.png",
-    "/screenshot-wide.png"
+    "/screenshot-wide.png",
+    "index.css",
+    "index.js"
 ];
 
 // Instalacja Service Workera i cache'owanie plików
@@ -76,18 +77,9 @@ self.addEventListener("fetch", (event) => {
     }
 
     event.respondWith(
-        fetch(event.request)
-            .then((response) => {
-                return caches.open(CACHE_NAME).then((cache) => {
-                    cache.put(event.request, response.clone());
-                    return response;
-                });
-            })
-            .catch(() => {
-                console.warn("⚠️ Brak sieci, próbuję znaleźć w cache:", event.request.url);
-                return caches.match(event.request).then((cachedResponse) => {
-                    return cachedResponse || caches.match("/offline.html"); // 📌 Zwracamy stronę offline
-                });
-            })
-    );
-});
+        caches.match(event.request).then((response) => {
+          return response || new Response("Not found", { status: 404 });
+        })
+      );
+    }
+);
